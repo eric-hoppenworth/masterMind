@@ -32,15 +32,15 @@ function getUserInput(length){
 		var question = {};
 		question.name = i.toString();
 		question.type = "input";
-		question.message = "enter number " + (i+1);
+		question.message = `enter number for position ${(i+1)}`;
 		prompts.push(question);
 	}
-	inquirer.prompt(prompts).then(function(answers){
-		var ansArray = [];
-		for(var i = 0; i < length; i ++){
-			ansArray.push(parseInt(answers[i]));
-		}
-		if(turnNumber < maxTurns ){
+	if(turnNumber < maxTurns){
+		inquirer.prompt(prompts).then(function(answers){
+			var ansArray = [];
+			for(var i = 0; i < length; i ++){
+				ansArray.push(parseInt(answers[i]));
+			}
 			console.log(ansArray);
 			// console.log(myPuzzle);
 			//check answer
@@ -55,11 +55,12 @@ function getUserInput(length){
 				//do this again
 				getUserInput(length);
 			}
-		} else {
-			console.log("You lose");
-			console.log(myPuzzle);
-		}
-	});
+		});
+	} else {
+		console.log("You lose");
+		console.log(myPuzzle);
+	}
+		
 }
 
 function checkPuzzle(input, puzzle){
@@ -76,18 +77,15 @@ function checkPuzzle(input, puzzle){
 		rightPlace: 0,
 		wrongPlace: 0
 	};
+
 	for(var i = 0; i <puzzleCopy.length; i++){
-		for(var j = 0 ; j < inputCopy.length; j++){
-			if(puzzleCopy[i] != undefined && inputCopy[j] != undefined){
-				if(puzzleCopy[i] === inputCopy[j] && i === j){
-					results.rightPlace ++;
-					puzzleCopy[i] = undefined;
-					inputCopy[j] = undefined;
-				}
+		if(puzzleCopy[i] != undefined && inputCopy[i] != undefined){
+			if(puzzleCopy[i] === inputCopy[i]){
+				results.rightPlace ++;
+				puzzleCopy[i] = undefined;
+				inputCopy[i] = undefined;
 			}
 		}
-	}
-	for(var i = 0; i <puzzleCopy.length; i++){
 		for(var j = 0 ; j < inputCopy.length; j++){
 			if(puzzleCopy[i] != undefined && inputCopy[j] != undefined){
 				if(puzzleCopy[i] === inputCopy[j]){
