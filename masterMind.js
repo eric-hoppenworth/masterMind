@@ -1,14 +1,28 @@
 var inquirer = require('inquirer');
-//returns a random in from [min,max)
+var argv = require('yargs')
+	.default('l',4)
+	.default('g',10)
+	.argv;
+// console.log(argv);
+//returns a random int from [min,max)
 function getRandomInt(min,max){
 	return Math.floor(Math.random() * ( max - min )) + min;
 }
 
 function getPuzzle(length){
 	var myPuzzle = [];
-	for(var i = 0; i < length; i++){
-		myPuzzle.push(getRandomInt(0,10));
+	if(argv.r){
+		for(var i = 0; i < length; i++){
+			myPuzzle.push(getRandomInt(0,10));
+		}
+	} else {
+		var numList = [0,1,2,3,4,5,6,7,8,9];
+		for(let i = 0; i < puzzleLength; i++){
+			var num = numList.splice(getRandomInt(0,numList.length),1)[0];
+			myPuzzle.push(num);
+		}
 	}
+	
 	return myPuzzle;
 }
 
@@ -43,6 +57,7 @@ function getUserInput(length){
 			}
 		} else {
 			console.log("You lose");
+			console.log(myPuzzle);
 		}
 	});
 }
@@ -50,11 +65,11 @@ function getUserInput(length){
 function checkPuzzle(input, puzzle){
 	var inputCopy = [];
 	//create copies of each array
-	for (var i = 0; i <input.length;i++){
+	for (var i = 0; i < input.length ; i++){
 		inputCopy.push(input[i]);
 	}
 	var puzzleCopy = [];
-	for (var i = 0; i <puzzle.length;i++){
+	for (var i = 0; i < puzzle.length ; i++){
 		puzzleCopy.push(puzzle[i]);
 	}
 	var results = {
@@ -63,7 +78,7 @@ function checkPuzzle(input, puzzle){
 	};
 	for(var i = 0; i <puzzleCopy.length; i++){
 		for(var j = 0 ; j < inputCopy.length; j++){
-			if(puzzleCopy[i] && inputCopy[j]){
+			if(puzzleCopy[i] != undefined && inputCopy[j] != undefined){
 				if(puzzleCopy[i] === inputCopy[j] && i === j){
 					results.rightPlace ++;
 					puzzleCopy[i] = undefined;
@@ -72,10 +87,9 @@ function checkPuzzle(input, puzzle){
 			}
 		}
 	}
-
 	for(var i = 0; i <puzzleCopy.length; i++){
 		for(var j = 0 ; j < inputCopy.length; j++){
-			if(puzzleCopy[i] && inputCopy[j]){
+			if(puzzleCopy[i] != undefined && inputCopy[j] != undefined){
 				if(puzzleCopy[i] === inputCopy[j]){
 					results.wrongPlace ++;
 					puzzleCopy[i] = undefined;
@@ -87,9 +101,9 @@ function checkPuzzle(input, puzzle){
 	return results;
 }
 
-var puzzleLength = 4;
+var puzzleLength = argv.l > 10 ? 10 : argv.l;
 var turnNumber = 0;
-var maxTurns = 10;
+var maxTurns = argv.g;
 var myPuzzle = getPuzzle(puzzleLength);
 var history = [];
 var myGuess = [];
